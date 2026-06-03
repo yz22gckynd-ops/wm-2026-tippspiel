@@ -1,0 +1,3 @@
+'use client';
+import { useState } from 'react'; import { supabase } from '@/lib/supabaseClient';
+export default function LoginPage(){ const [email,setEmail]=useState(''); const [message,setMessage]=useState(''); async function login(){ const {error}=await supabase.auth.signInWithOtp({email,options:{emailRedirectTo:`${window.location.origin}/auth/callback`}}); setMessage(error?error.message:'Login-Link wurde per E-Mail verschickt.'); } return <div className='card'><h1>WM 2026 Tippspiel Login</h1><p>Gib deine E-Mail-Adresse ein. Du erhältst einen Login-Link.</p><input type='email' placeholder='deine@email.de' value={email} onChange={e=>setEmail(e.target.value)}/><button onClick={login}>Login-Link senden</button>{message&&<p>{message}</p>}</div>; }

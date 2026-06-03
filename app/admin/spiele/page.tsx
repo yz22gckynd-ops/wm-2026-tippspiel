@@ -1,0 +1,3 @@
+'use client';
+import { useEffect, useState } from 'react'; import { supabase } from '@/lib/supabaseClient';
+export default function AdminMatchesPage(){ const [matches,setMatches]=useState<any[]>([]); useEffect(()=>{load();},[]); async function load(){ const {data}=await supabase.from('matches').select('*').order('kickoff_time'); setMatches(data||[]);} return <div><h1>Admin: Spiele</h1><div className='table-wrap'><table><thead><tr><th>Nr.</th><th>Gruppe</th><th>Spiel</th><th>Anstoß</th><th>Ort</th></tr></thead><tbody>{matches.map(m=><tr key={m.id}><td>{m.match_number}</td><td>{m.group_name}</td><td>{m.team_a} – {m.team_b}</td><td>{new Date(m.kickoff_time).toLocaleString('de-DE')}</td><td>{m.venue}</td></tr>)}</tbody></table></div></div>; }

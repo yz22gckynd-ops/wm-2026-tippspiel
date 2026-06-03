@@ -1,0 +1,3 @@
+'use client';
+import { useEffect, useState } from 'react'; import { supabase } from '@/lib/supabaseClient';
+export default function AdminPlayersPage(){ const [players,setPlayers]=useState<any[]>([]); useEffect(()=>{load();},[]); async function load(){ const {data}=await supabase.from('players').select('*').order('name'); setPlayers(data||[]);} return <div><h1>Admin: Spieler</h1><p className='muted'>Neue Spieler legst du in Supabase Auth an und ergänzt sie in der Tabelle players.</p><table><thead><tr><th>Name</th><th>E-Mail</th><th>Admin</th></tr></thead><tbody>{players.map(p=><tr key={p.id}><td>{p.name}</td><td>{p.email}</td><td>{p.is_admin?'Ja':'Nein'}</td></tr>)}</tbody></table></div>; }
