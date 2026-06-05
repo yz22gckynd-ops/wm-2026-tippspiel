@@ -6,6 +6,13 @@ import { supabase } from '@/lib/supabaseClient';
 export default function AuthCallbackPage() {
   useEffect(() => {
     async function finishLogin() {
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get('code');
+
+      if (code) {
+        await supabase.auth.exchangeCodeForSession(code);
+      }
+
       const hash = window.location.hash;
 
       if (hash) {
