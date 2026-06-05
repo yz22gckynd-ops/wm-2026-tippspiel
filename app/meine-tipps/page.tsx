@@ -15,21 +15,6 @@ if (!profile) {
       display_name: name
     });
   }
-}const { data: profile } = await supabase
-  .from('profiles')
-  .select('*')
-  .eq('id', user.id)
-  .single();
-
-if (!profile) {
-  const name = prompt('Bitte gib deinen Tippnamen ein:');
-
-  if (name) {
-    await supabase.from('profiles').insert({
-      id: user.id,
-      display_name: name
-    });
-  }
 setUserId(user.id); const {data:matchData}=await supabase.from('matches').select('*').eq('round','Vorrunde').order('kickoff_time'); const {data:tipData}=await supabase.from('tips').select('*').eq('player_id',user.id); const byMatch:Record<string,any>={}; tipData?.forEach(t=>byMatch[t.match_id]=t); setMatches(matchData||[]); setTips(byMatch);} async function saveTip(matchId:string,goalsA:number,goalsB:number){ if(!userId)return; const {error}=await supabase.from('tips').upsert({player_id:userId,match_id:matchId,tip_goals_a:goalsA,tip_goals_b:goalsB,updated_at:new Date().toISOString()},{onConflict:'player_id,match_id'}); if(error)alert('Tipp konnte nicht gespeichert werden: '+error.message); else await load(); }return <div>
 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
 <h1>Meine Tipps</h1>
