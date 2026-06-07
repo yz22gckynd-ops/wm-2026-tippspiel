@@ -22,6 +22,10 @@ export default function MyTipsPage() {
     }
 
     setUserId(user.id);
+await supabase.from('players').upsert({
+  id: user.id,
+  email: user.email
+});
 
     const { data: profile } = await supabase
       .from('profiles')
