@@ -22,10 +22,15 @@ export default function MyTipsPage() {
     }
 
     setUserId(user.id);
-await supabase.from('players').upsert({
+const { error: playerError } = await supabase.from('players').upsert({
   id: user.id,
-  email: user.email
+  email: user.email,
+  name: user.email
 });
+
+if (playerError) {
+  alert('PLAYER ERROR: ' + playerError.message);
+}
 
     const { data: profile } = await supabase
       .from('profiles')
