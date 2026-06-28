@@ -1,7 +1,9 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';   import { supabase } from '@/lib/supabaseClient';
 export default function AllTipsPage(){ const [matches,setMatches]=useState<any[]>([]); const [players,setPlayers]=useState<any[]>([]); const [tips,setTips]=useState<any[]>([]);
-const nextGameRef = useRef<HTMLTableRowElement | null>(null); useEffect(()=>{load();},[]); async function load(){ const {data:userData}=await supabase.auth.getUser(); if(!userData.user){window.location.href='/login';return;} const {data:matchData}=await supabase.from('matches').select('*').order('kickoff_time'); const {data:playerData}=await supabase.from('players').select('*').order('name');const {data:tipData}=await supabase
+const nextGameRef = useRef<HTMLTableRowElement | null>(null);const nextMatch = matches.find(
+(m) => new Date(m.kickoff_time) > new Date()
+); useEffect(()=>{load();},[]); async function load(){ const {data:userData}=await supabase.auth.getUser(); if(!userData.user){window.location.href='/login';return;} const {data:matchData}=await supabase.from('matches').select('*').order('kickoff_time'); const {data:playerData}=await supabase.from('players').select('*').order('name');const {data:tipData}=await supabase
 .from(`tips`)
 .select(`*`)
 .range(0, 5000); setMatches(matchData||[]); setPlayers(playerData||[]); setTips(tipData||[]);} function tipFor(playerId:string,matchId:string){ const t=tips.find(x=>x.player_id===playerId&&x.match_id===matchId); return t?`${t.tip_goals_a}:${t.tip_goals_b}`:'';} useEffect(() => {
@@ -14,6 +16,7 @@ block: 'center',
 }, 300);
 }
 }, [nextMatch?.id]);
+
  return <div><h1>Alle Tipps</h1><div style={{ maxHeight: '75vh', overflow: 'auto' }}>
   <table><thead>
 <tr>
