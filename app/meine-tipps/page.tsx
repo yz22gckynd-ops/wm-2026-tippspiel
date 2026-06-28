@@ -91,6 +91,16 @@ if (playerError) {
 const nextMatch = matches.find(
 (m) => new Date(m.kickoff_time) > new Date() && !tips[m.id]
 );
+useEffect(() => {
+if (nextMatch && nextGameRef.current) {
+setTimeout(() => {
+nextGameRef.current?.scrollIntoView({
+behavior: 'smooth',
+block: 'center',
+});
+}, 300);
+}
+}, [nextMatch?.id]);
   return (
     <div>
       <h1>Meine Tipps</h1>
