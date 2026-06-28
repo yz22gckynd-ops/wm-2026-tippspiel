@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef,useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 
 export default function MyTipsPage() {
   const [matches, setMatches] = useState<any[]>([]);
   const [tips, setTips] = useState<Record<string, any>>({});
   const [userId, setUserId] = useState<string | null>(null);
+const nextGameRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     load();
@@ -64,6 +65,9 @@ if (playerError) {
     tipData?.forEach((t) => (byMatch[t.match_id] = t));
 
     setMatches(matchData || []);
+setTimeout(() => {
+nextGameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}, 300);
     setTips(byMatch);
   }
 
@@ -96,28 +100,32 @@ if (playerError) {
       </p>
 
       {matches.map((match) => {
+const isNextGame =
+new Date(match.kickoff_time) > new Date() &&
+!nextGameRef.current;
         const locked = new Date(match.kickoff_time) <= new Date();
 
         return (
           <TipCard
-            key={match.id}
-            match={match}
-            tip={tips[match.id]}
-            locked={locked}
-            onSave={saveTip}
-          />
+key={match.id}
+match={match}
+tip={tips[match.id]}
+locked={locked}
+onSave={saveTip}
+scrollRef={isNextGame ? nextGameRef : null}
+/>
         );
       })}
     </div>
   );
 }
 
-function TipCard({ match, tip, locked, onSave }: any) {
+function TipCard({ match, tip, locked, onSave, scrollRef }: any) {
   const [a, setA] = useState(tip?.tip_goals_a ?? '');
   const [b, setB] = useState(tip?.tip_goals_b ?? '');
 
   return (
-    <div className="card">
+    <div className="card" ref={scrollRef}>
       <strong>
         Spiel {match.match_number}: {match.team_a} – {match.team_b}
       </strong>
