@@ -65,9 +65,6 @@ if (playerError) {
     tipData?.forEach((t) => (byMatch[t.match_id] = t));
 
     setMatches(matchData || []);
-setTimeout(() => {
-nextGameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}, 300);
     setTips(byMatch);
   }
 
@@ -91,7 +88,9 @@ nextGameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       await load();
     }
   }
-
+const nextMatch = matches.find(
+(m) => new Date(m.kickoff_time) > new Date() && !tips[m.id]
+);
   return (
     <div>
       <h1>Meine Tipps</h1>
@@ -100,11 +99,8 @@ nextGameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
       </p>
 
 {matches.map((match) => {
-const isNextGame =
-new Date(match.kickoff_time) > new Date() &&
-!tips[match.id] &&
-!nextGameRef.current;
 
+ 
         const locked = new Date(match.kickoff_time) <= new Date();
 
         return (
@@ -114,7 +110,7 @@ match={match}
 tip={tips[match.id]}
 locked={locked}
 onSave={saveTip}
-scrollRef={isNextGame ? nextGameRef : null}
+scrollRef={nextMatch?.id === match.id ? nextGameRef : null}
 />
         );
       })}
