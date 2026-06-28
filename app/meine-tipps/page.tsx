@@ -131,7 +131,7 @@ scrollRef={nextMatch?.id === match.id ? nextGameRef : null}
 function TipCard({ match, tip, locked, onSave, scrollRef }: any) {
   const [a, setA] = useState(tip?.tip_goals_a ?? '');
   const [b, setB] = useState(tip?.tip_goals_b ?? '');
-
+const [saved, setSaved] = useState(false);
   return (
     <div className="card" ref={scrollRef}>
       <strong>
@@ -148,7 +148,10 @@ function TipCard({ match, tip, locked, onSave, scrollRef }: any) {
         min="0"
         value={a}
         disabled={locked}
-        onChange={(e) => setA(e.target.value)}
+        onChange={(e) => {
+setA(e.target.value);
+setSaved(false);
+}}
       />
 
       <input
@@ -156,12 +159,25 @@ function TipCard({ match, tip, locked, onSave, scrollRef }: any) {
         min="0"
         value={b}
         disabled={locked}
-        onChange={(e) => setB(e.target.value)}
+       onChange={(e) => {
+setB(e.target.value);
+setSaved(false);
+}}
+
       />
 
       <button
+style={{
+backgroundColor: saved ? "#16a34a" : "#2563eb",
+color: "white"
+}}
+
         disabled={locked || a === '' || b === ''}
-        onClick={() => onSave(match.id, Number(a), Number(b))}
+        onClick={async () => {
+await onSave(match.id, Number(a), Number(b));
+setSaved(true);
+}}
+
       >
         {locked ? 'Gesperrt' : 'Speichern'}
       </button>
