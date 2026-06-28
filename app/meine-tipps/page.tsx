@@ -99,10 +99,12 @@ nextGameRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         Jeder Tipp kann bis zum jeweiligen Spielbeginn geändert werden.
       </p>
 
-      {matches.map((match) => {
+{matches.map((match) => {
 const isNextGame =
 new Date(match.kickoff_time) > new Date() &&
+!tips[match.id] &&
 !nextGameRef.current;
+
         const locked = new Date(match.kickoff_time) <= new Date();
 
         return (
