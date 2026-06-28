@@ -52,7 +52,7 @@ if (playerError) {
     const { data: matchData } = await supabase
       .from('matches')
       .select('*')
-      .eq('round', 'Vorrunde')
+   
       .order('kickoff_time');
 
     const { data: tipData } = await supabase
